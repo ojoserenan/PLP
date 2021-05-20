@@ -13,25 +13,24 @@ codes = [UP, UP, DOWN, DOWN, LEFT, RIGHT, LEFT, RIGHT, B, A]
 
 class WSHandler(WebSocketHandler):
     def open(self):
-        print("WebSocket opened")
+        print("WebSocket aberto")
 
-        # A Subject is both an observable and observer, so we can both subscribe
-        # to it and also feed (on_next) it with new values
+        # Um Sujeito é observável e observador, portanto, podemos nos inscrever
+        # para ele e também alimentá-lo (on_next) com novos valores
         self.subject = Subject()
 
-        # Now we take on our magic glasses and project the stream of bytes into
-        # a ...
+        # Agora pegamos nossos óculos mágicos e projetamos o fluxo de bytes em
         query = self.subject.pipe(
-            # 1. stream of keycodes
+            # 1. fluxo de códigos-chave
             ops.map(lambda obj: obj["keycode"]),
-            # 2. stream of windows (10 ints long)
+            # 2. fluxo de janelas (10 ints de comprimento)
             ops.window_with_count(10, 1),
-            # 3. stream of booleans, True or False
+            # 3. fluxo de booleanos, verdadeiro ou falso
             ops.flat_map(lambda win: win.pipe(ops.sequence_equal(codes))),
-            # 4. stream of Trues
+            # 4. fluxo de verdadeiras
             ops.filter(lambda equal: equal)
         )
-        # 4. we then subscribe to the Trues, and signal Konami! if we see any
+        # 4. então, assinamos o Trues e sinalizamos para a Konami! se virmos algum
         query.subscribe(lambda x: self.write_message("Konami!"))
 
     def on_message(self, message):
@@ -39,7 +38,7 @@ class WSHandler(WebSocketHandler):
         self.subject.on_next(obj)
 
     def on_close(self):
-        print("WebSocket closed")
+        print("WebSocket fechado")
 
 
 class MainHandler(RequestHandler):
@@ -54,7 +53,7 @@ def main():
         (r'/ws', WSHandler),
         (r'/static/(.*)', StaticFileHandler, {'path': "."})
     ])
-    print("Starting server at port: %s" % port)
+    print("Iniciando servidor na porta: %s" % port)
     app.listen(port)
     ioloop.IOLoop.current().start()
 
