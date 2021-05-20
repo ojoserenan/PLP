@@ -8,6 +8,6 @@ $(function () {
     });
 
     ws.onmessage = function(msg) {
-        result.html(msg.data).show().fadeOut(2000);   // print the result
+        result.html(msg.data).show().fadeOut(2000);  
     };
 });

@@ -15,7 +15,7 @@ class WSHandler(WebSocketHandler):
     def open(self):
         print("WebSocket aberto")
 
-        # Um Sujeito é observável e observador, portanto, podemos nos inscrever
+        # Um Sujeito é observável e observ5ador, portanto, podemos nos inscrever
         # para ele e também alimentá-lo (on_next) com novos valores
         self.subject = Subject()
 
